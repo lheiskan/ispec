@@ -134,7 +134,7 @@ When the work is committed and (where applicable) tested or deployed, suggest in
 
 ## Status transitions during the session
 
-When applying canon updates, follow the lifecycle states from `docs/design.md`:
+When applying canon updates, follow these lifecycle states:
 
 - **Feature**: created as `proposed` at contract time; transitions to `active` when coding starts; transitions to `implemented` at commit time after reconciliation.
 - **Requirement**: created as a card; satisfaction is derived from the features that target it (do not write satisfaction directly).
