@@ -2,12 +2,13 @@
 //
 // Usage:
 //
-//	ispec-lint [-root <project-root>]
+//	ispec-lint [-root <project-root>] [-canon-dir <subdir>]
 //
-// Walks <project-root>/docs, parses YAML frontmatter on every .md file under
-// recognized card-type directories (stakeholders, requirements, features,
-// spec, adr, sessions), validates per-type schema rules, and resolves
-// cross-card references (frontmatter ID lists and body [[wikilinks]]).
+// Walks <project-root>/<canon-dir> (default .ispec), parses YAML frontmatter
+// on every .md file under recognized card-type directories (stakeholders,
+// requirements, features, spec, adr, sessions), validates per-type schema
+// rules, and resolves cross-card references (frontmatter ID lists and body
+// [[wikilinks]]).
 //
 // Cross-repo references of the form <repo>:<id> are noted as warnings but not
 // resolved; cross-repo lint is not yet implemented.
@@ -63,9 +64,11 @@ type Issue struct {
 }
 
 var (
-	fmRe        = regexp.MustCompile(`(?s)\A---\n(.*?)\n---\n?(.*)\z`)
-	wikilinkRe  = regexp.MustCompile(`\[\[([^\]\n]+)\]\]`)
-	crossRepoRe = regexp.MustCompile(`^[a-z][a-z0-9_-]*:[A-Za-z]+-[0-9a-zA-Z._-]+$`)
+	fmRe          = regexp.MustCompile(`(?s)\A---\n(.*?)\n---\n?(.*)\z`)
+	wikilinkRe    = regexp.MustCompile(`\[\[([^\]\n]+)\]\]`)
+	crossRepoRe   = regexp.MustCompile(`^[a-z][a-z0-9_-]*:[A-Za-z]+-[0-9a-zA-Z._-]+$`)
+	codeSpanRe    = regexp.MustCompile("`[^`\n]*`")
+	fencedBlockRe = regexp.MustCompile("(?s)```.*?```")
 
 	statusByType = map[string][]string{
 		"stakeholder": {"active", "retired"},
@@ -309,7 +312,12 @@ func resolveReferences(cards []*Card) []Issue {
 			resolveRef(c, c.DiscoveredDuring, "session", "discovered_during")
 		}
 
-		for _, m := range wikilinkRe.FindAllStringSubmatch(c.Body, -1) {
+		// Strip fenced code blocks and inline code before scanning for
+		// wikilinks; otherwise documentation snippets like `[[wikilinks]]` or
+		// `[[deploy-tool:F-12]]` are spuriously treated as references.
+		clean := fencedBlockRe.ReplaceAllString(c.Body, "")
+		clean = codeSpanRe.ReplaceAllString(clean, "")
+		for _, m := range wikilinkRe.FindAllStringSubmatch(clean, -1) {
 			ref := strings.TrimSpace(m[1])
 			if i := strings.Index(ref, "|"); i >= 0 {
 				ref = strings.TrimSpace(ref[:i])
@@ -321,16 +329,17 @@ func resolveReferences(cards []*Card) []Issue {
 }
 
 func main() {
-	rootFlag := flag.String("root", ".", "project root containing docs/")
+	rootFlag := flag.String("root", ".", "project root containing the canon directory")
+	canonDirFlag := flag.String("canon-dir", ".ispec", "directory under root containing card files")
 	flag.Parse()
 
-	docsDir := filepath.Join(*rootFlag, "docs")
-	if info, err := os.Stat(docsDir); err != nil || !info.IsDir() {
-		fmt.Fprintf(os.Stderr, "ispec-lint: no docs/ directory at %s\n", docsDir)
+	canonDir := filepath.Join(*rootFlag, *canonDirFlag)
+	if info, err := os.Stat(canonDir); err != nil || !info.IsDir() {
+		fmt.Fprintf(os.Stderr, "ispec-lint: no canon directory at %s\n", canonDir)
 		os.Exit(2)
 	}
 
-	cards, issues := collectCards(docsDir)
+	cards, issues := collectCards(canonDir)
 	for _, c := range cards {
 		issues = append(issues, validateCard(c)...)
 	}

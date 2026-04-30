@@ -47,9 +47,9 @@ If the session amended any spec sections, regenerate the derived documents that 
 
 - `REQUIREMENTS.md` (if a requirement was added / changed).
 - `SPEC.md` (if any spec section changed).
-- `docs/build/user-manual.md` (if `audience: end-user` content changed).
-- `docs/build/operator-runbook.md` (if `audience: operator` content changed).
-- `docs/build/dev-reference.md` (if any spec or ADR changed).
+- `docs/user-manual.md` (if `audience: end-user` content changed).
+- `docs/operator-runbook.md` (if `audience: operator` content changed).
+- `docs/dev-reference.md` (if any spec or ADR changed).
 - `BACKLOG.md` (if any deferred cards were added).
 
 The doc-generation prompt physically only reads cards filtered by audience, preventing operational details from leaking into user-facing docs.

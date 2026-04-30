@@ -10,7 +10,7 @@ Initialize a new ispec-using project. Adapts to the empirical reality that most 
 ## When to invoke
 
 - Starting a brand-new repository that intends to adopt ispec.
-- An existing repository without `docs/stakeholders/`, `docs/requirements/`, etc., where the user wants to begin using ispec.
+- An existing repository without `.ispec/stakeholders/`, `.ispec/requirements/`, etc., where the user wants to begin using ispec.
 - Explicit user invocation.
 
 If invoked on a repo that already has ispec canon, do not overwrite — instead, hand off to `spec-session` (the project is past bootstrap).
@@ -34,7 +34,7 @@ Output of the dialogue goes into the bootstrap session card body. Do NOT write a
 
 ### 2. Open the bootstrap session card
 
-Create `docs/sessions/<YYYY-MM-DD>-bootstrap.md`:
+Create `.ispec/sessions/<YYYY-MM-DD>-bootstrap.md`:
 
 ```yaml
 ---

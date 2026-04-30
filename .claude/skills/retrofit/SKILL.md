@@ -9,7 +9,7 @@ Initialize ispec canon for an existing project. Reads the codebase, existing doc
 
 ## When to invoke
 
-- An existing repository with code and git history but no ispec canon (no `docs/stakeholders/`, etc.).
+- An existing repository with code and git history but no ispec canon (no `.ispec/stakeholders/`, etc.).
 - The user has asked to start using ispec on this project.
 - Explicit user invocation.
 
@@ -40,7 +40,7 @@ Ask the user:
 
 ### 2. Open a retrofit session card
 
-`docs/sessions/<YYYY-MM-DD>-retrofit.md`:
+`.ispec/sessions/<YYYY-MM-DD>-retrofit.md`:
 
 ```yaml
 ---
@@ -97,7 +97,7 @@ If the project has existing documentation (README, OPS.md, etc.), translate sect
 - An OPS.md's deployment/operations content → operator-audience spec sections, possibly an ADR or two.
 - Migration / pivot notes → ADRs with `status: superseded` or `accepted`.
 
-Once the canon is drafted, the original docs can be retired, simplified, or pointed at the canon (e.g. README becomes a 50-line pointer to `docs/`).
+Once the canon is drafted, the original docs can be retired, simplified, or pointed at the canon (e.g. README becomes a 50-line pointer to `.ispec/`).
 
 ### 6. Iterate with user, one card at a time
 

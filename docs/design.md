@@ -73,10 +73,10 @@ Sessions form the chronological narrative; canon (requirements, features, spec, 
 
 ## Data model
 
-All artifacts are markdown cards in a flat-ish layout, navigable as a graph.
+All artifacts are markdown cards in a flat-ish layout under `.ispec/`, navigable as a graph.
 
 ```
-docs/
+.ispec/
   stakeholders/<slug>.md
   requirements/<slug>.md
   features/<slug>.md
@@ -85,6 +85,8 @@ docs/
   sessions/<YYYY-MM-DD>-<slug>.md
   index.md                   # curated entry-point map (concept → cards)
 ```
+
+The `.ispec/` location mirrors the `.git/` / `.claude/` convention: tool-managed source-of-truth, hidden from default human listings, parsed by tooling. `docs/` remains available for human-authored long-form content (this design doc, worked examples, README) and for generated views (full SPEC, user manual, operator runbook). The default canon directory can be overridden with `ispec-lint -canon-dir <subdir>` if a project needs a different layout.
 
 Properties:
 

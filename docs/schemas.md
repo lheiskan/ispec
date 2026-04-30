@@ -4,7 +4,7 @@ Reference for the frontmatter expected on each card type. Lint enforces these. B
 
 ## Common conventions
 
-- **File location**: `docs/<type>s/<slug>.md` (e.g. `docs/features/offline-call-logging.md`). ADRs live in `docs/adr/<NNNN>-<slug>.md` (numeric prefix). Sessions live in `docs/sessions/<YYYY-MM-DD>-<slug>.md`.
+- **File location**: `.ispec/<type>s/<slug>.md` (e.g. `.ispec/features/offline-call-logging.md`). ADRs live in `.ispec/adr/<NNNN>-<slug>.md` (numeric prefix). Sessions live in `.ispec/sessions/<YYYY-MM-DD>-<slug>.md`. The default location is `.ispec/` but is configurable via `ispec-lint -canon-dir <subdir>`.
 - **Slug**: kebab-case, must match the filename (without extension and any numeric prefix).
 - **Stable ID**: typed prefix + counter (`STK-7`, `REQ-12`, `F-23`, `SPEC-auth.refresh`, `ADR-0014`). Sessions are identified by slug only — they don't have stable IDs because they're chronological by nature.
 - **Cross-repo references**: prefix with the repo name and a colon, e.g. `[[deploy-tool:F-12]]`, `depends_on: [deploy-tool:F-12]`. Sibling repos are listed in `.ispec/repos.yml` (when cross-repo lint is enabled).

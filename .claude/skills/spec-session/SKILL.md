@@ -13,7 +13,7 @@ Invoke at the start of any unit of work that would result in code or canon chang
 
 Skip only for trivial chores that touch nothing in canon (formatting, dependency bump that does not change behavior, comment fix). When in doubt, invoke — the classification step is cheap.
 
-**For brand-new projects:** if the repo has no ispec canon yet (no `docs/stakeholders/`, `docs/requirements/`, etc.), do not run this skill. Hand off to the `bootstrap` skill instead — bootstrap explicitly defers canon authoring until the first working slice exists, which is what a brand-new project actually needs.
+**For brand-new projects:** if the repo has no ispec canon yet (no `.ispec/stakeholders/`, `.ispec/requirements/`, etc.), do not run this skill. Hand off to the `bootstrap` skill instead — bootstrap explicitly defers canon authoring until the first working slice exists, which is what a brand-new project actually needs.
 
 ## Process
 
@@ -43,7 +43,7 @@ Reuse existing cards in preference to creating new ones. The card graph stays cl
 
 ### 3. Open a session card
 
-Create `docs/sessions/<YYYY-MM-DD>-<short-slug>.md` with frontmatter:
+Create `.ispec/sessions/<YYYY-MM-DD>-<short-slug>.md` with frontmatter:
 
 ```yaml
 ---
