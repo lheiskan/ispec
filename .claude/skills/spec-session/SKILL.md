@@ -54,11 +54,28 @@ classification: <one of the categories above>
 status: open
 affected_cards: []
 deferred_cards: []
+commits: []
 outcome: ""
 ---
+
+## Trigger
+
+(one paragraph describing what initiated this work, in the user's words)
+
+## Pre-decisions
+
+(tooling / scope / approach decisions the user has already made or that fall out of the contract step before coding starts)
+
+## Discoveries during the session
+
+(filled in at reconciliation — observations about ispec or the project that surfaced during the work, anything surprising or that didn't fit. The ispec-related ones flow back as triggers for future ispec sessions.)
+
+## Outcome
+
+(filled at session close)
 ```
 
-Body: a short paragraph describing the trigger in the user's words. The session card accumulates state through the loop.
+The body sections accumulate state through the loop. The "Discoveries during the session" section is the load-bearing dogfood-loop mechanism for ispec — capture observations as they surface during the work, do not try to fix ispec mid-session.
 
 ### 4. Detect cross-repo work
 
@@ -127,6 +144,8 @@ ADR-0014: chose last-write-wins with visible warning.
 ```
 
 If the work spans multiple natural commits, keep each one referencing the IDs it touches. The commit history is part of the corpus future agents will read.
+
+After committing, populate the session card's `commits:` field with the resulting SHAs so the session is linkable to the actual git changes.
 
 ### 10. Suggest closing the session
 

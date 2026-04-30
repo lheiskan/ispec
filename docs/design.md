@@ -251,13 +251,15 @@ During the cross-repo detection step (spec-session step 4) and contract step (st
 
 ### Non-ispec upstreams
 
-When the upstream is an external library, third-party platform, or any repo that does not use ispec, cross-repo canon updates aren't possible. Fall back:
+When the upstream is an external library, third-party platform, or any repo that does not use ispec, cross-repo canon updates aren't possible. The same fallback applies to **internal sibling projects that simply have not yet been retrofitted onto ispec** — which is the more common case in practice. A typical case: a downstream app's ADRs and spec sections reference its deploy tool extensively in prose because that tool is the upstream dependency, but the tool doesn't yet have its own canon, so structural cross-repo wikilinks aren't available.
 
-- Capture an ADR in the *downstream* repo documenting the external dependency choice, with `external_dependency: <library/platform>` metadata.
-- If a workaround was needed because the upstream gap can't be filled in this session, capture a deferred feature linked to "upstream PR / waiting on external."
+Fall back:
+
+- Capture an ADR in the *downstream* repo documenting the dependency choice. For external dependencies, add `external_dependency: <library/platform>` metadata. For internal-not-yet-ispec siblings, the ADR explains the contract from the downstream side; if and when the upstream is later retrofitted, the prose references can be tightened to structural `[[<repo>:<id>]]` wikilinks.
+- If a workaround was needed because the upstream gap can't be filled in this session, capture a deferred feature linked to "upstream PR / waiting on external" (or "upstream retrofit / waiting on sibling").
 - If the workaround is meant to be temporary, the deferred feature has a clear "remove once X" condition; a future session picking it up reverses the workaround.
 
-This keeps the downstream canon honest about its dependencies and constraints without pretending to control the upstream.
+This keeps the downstream canon honest about its dependencies and constraints without pretending to control the upstream, and without blocking adoption on whether sibling tools are also ready.
 
 ## Bootstrap path
 

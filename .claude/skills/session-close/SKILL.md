@@ -37,7 +37,10 @@ Fill in the session card's terminal state:
 - `outcome`: a short paragraph describing what was achieved, in the user's domain language. Not a changelog of file edits — a description of the change that future agents and humans will read to understand why this session existed.
 - `affected_cards`: list of every card created or amended during the session, with stable IDs.
 - `deferred_cards`: list of every card captured as deferred, with stable IDs and a short rationale per item.
+- `commits`: the git SHAs landed during the session (look at `git log` since the session opened).
 - `status: resolved`.
+
+Before resolving, check the "Discoveries during the session" (or "Discoveries about ispec" for bootstrap / retrofit sessions) body section. If it's empty, ask the user once whether anything felt friction-y, surprising, or wrong about ispec while doing this work — even minor observations belong there. The dogfood loop only works if findings flow back.
 
 If the session was abandoned (work started but explicitly dropped without merging), set `status: abandoned` instead and capture the reason in `outcome`.
 

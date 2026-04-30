@@ -45,6 +45,7 @@ classification: bootstrap
 status: open
 affected_cards: []
 deferred_cards: []
+commits: []
 outcome: ""
 ---
 
@@ -56,6 +57,12 @@ outcome: ""
 
 ## Open questions (resolved during this session)
 <list of questions the agent raised and how they were resolved>
+
+## Discoveries about ispec
+(filled as the bootstrap progresses — things that surprised, frustrated, or didn't fit while applying ispec to this project. Flow back as triggers for follow-up spec-sessions in the ispec repo.)
+
+## Outcome
+(filled at close)
 ```
 
 ### 3. Implement the first working slice
@@ -122,8 +129,11 @@ Fix any failures.
 Update the session card:
 
 - `affected_cards`: list of all cards created in Phase 1.
+- `commits`: the git SHAs landed during Phase 1 (look at `git log` since the session opened).
 - `outcome`: one paragraph summarizing what was bootstrapped.
 - `status: resolved`.
+
+Confirm the "Discoveries about ispec" section is non-empty if there were any observations during Phase 1 — even minor ones. If it's empty, ask the user one more time whether anything felt friction-y; ispec only improves if findings make it back.
 
 Tell the user: "Bootstrap complete. The project now has initial canon and graduates to steady-state. Future work will use the `spec-session` skill."
 

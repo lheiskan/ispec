@@ -51,9 +51,28 @@ classification: retrofit
 status: open
 affected_cards: []
 deferred_cards: []
+commits: []
 outcome: ""
 ---
+
+## Reading notes
+
+(observations about the project as the agent reads it — domain semantics, pivots in git history, what's in existing docs vs. what's only in code)
+
+## Discoveries about ispec
+
+(things that surprised, frustrated, or didn't fit while applying ispec to this project — schema gaps, ambiguous skill instructions, missing relations. These flow back to ispec as the trigger for follow-up spec-sessions in the ispec repo.)
+
+## What's deliberately NOT being captured
+
+(scope decisions: parts of the project that don't need canon at this scope, with brief rationale)
+
+## Outcome
+
+(filled at close)
 ```
+
+The "Discoveries about ispec" section is the load-bearing dogfood-loop mechanism. Capture observations as they surface during the retrofit; do *not* try to fix ispec mid-retrofit (unless something is blocking). The findings travel back to ispec for processing in their own session.
 
 ### 3. Read the project
 
@@ -119,8 +138,11 @@ After all cards are drafted, run `ispec-lint`. Fix any failures (most commonly: 
 Update the session card:
 
 - `affected_cards`: every card created.
+- `commits`: the git SHAs landed during this retrofit (look at `git log` since the session opened).
 - `outcome`: paragraph summarizing what was retrofitted, what scope was chosen, what was deliberately *not* captured (and why).
 - `status: resolved`.
+
+Confirm the "Discoveries about ispec" section is non-empty if there were any observations during the retrofit — even minor ones. If it's empty, ask the user one more time whether anything felt friction-y; ispec only improves if findings make it back.
 
 Tell the user: "Retrofit complete at `<scope>` level. The project has initial canon and graduates to steady-state. Future work will use the `spec-session` skill, which can lazily fill in additional canon as needed."
 
