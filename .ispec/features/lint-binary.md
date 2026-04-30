@@ -17,7 +17,8 @@ A Go binary (`ispec-lint`) that walks the canon directory, parses card YAML fron
 ## Behavior
 
 - Reads `.ispec/` (or `-canon-dir <subdir>` override) under `-root` (default `.`).
-- Skips files outside recognized card-type directories so non-card content under the canon root is ignored.
+- **Errors on unrecognized directories** directly under the canon root, with a "did you mean..." suggestion when the directory name is one trailing `s` away from a valid card-type directory. This catches the common typo of pluralizing `spec` → `specs` or singularizing `stakeholders` → `stakeholder`.
+- Skips files at the canon root itself (`.ispec/index.md`, etc.) — those are not cards and don't trigger validation.
 - Validates: parseability, required fields per type, valid `status` / `audience` / `satisfaction` values, slug-matches-filename, stable ID uniqueness.
 - Resolves: every typed reference field plus every body wikilink, by stable ID or slug, with type-checking where applicable.
 - Cross-repo references (`<repo>:<id>`) emit a warning rather than an error, since cross-repo resolution is not yet implemented.

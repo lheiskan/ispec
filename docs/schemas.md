@@ -4,7 +4,18 @@ Reference for the frontmatter expected on each card type. Lint enforces these. B
 
 ## Common conventions
 
-- **File location**: `.ispec/<type>s/<slug>.md` (e.g. `.ispec/features/offline-call-logging.md`). ADRs live in `.ispec/adr/<NNNN>-<slug>.md` (numeric prefix). Sessions live in `.ispec/sessions/<YYYY-MM-DD>-<slug>.md`. The default location is `.ispec/` but is configurable via `ispec-lint -canon-dir <subdir>`.
+- **File location**: cards live under `.ispec/<directory>/<slug>.md`, with one directory per card type. The directory names are not all simple plurals — `spec` and `adr` stay singular because their plurals read awkwardly:
+
+  | Card type   | Directory                                          |
+  |-------------|----------------------------------------------------|
+  | stakeholder | `.ispec/stakeholders/<slug>.md`                    |
+  | requirement | `.ispec/requirements/<slug>.md`                    |
+  | feature     | `.ispec/features/<slug>.md`                        |
+  | spec        | `.ispec/spec/<slug>.md` *(singular — not `specs/`)* |
+  | adr         | `.ispec/adr/<NNNN>-<slug>.md` *(singular — not `adrs/`; numeric prefix)* |
+  | session     | `.ispec/sessions/<YYYY-MM-DD>-<slug>.md`           |
+
+  Lint errors on cards placed in any other directory directly under the canon root, with a "did you mean..." suggestion when the directory name is one trailing `s` away from a valid name (so `specs/` → `did you mean spec/?`). The canon root is configurable via `ispec-lint -canon-dir <subdir>`; the default is `.ispec`.
 - **Slug**: kebab-case, must match the filename (without extension and any numeric prefix).
 - **Stable ID**: typed prefix + counter (`STK-7`, `REQ-12`, `F-23`, `SPEC-auth.refresh`, `ADR-0014`). Sessions are identified by slug only — they don't have stable IDs because they're chronological by nature.
 - **Cross-repo references**: prefix with the repo name and a colon, e.g. `[[deploy-tool:F-12]]`, `depends_on: [deploy-tool:F-12]`. Sibling repos are listed in `.ispec/repos.yml` (when cross-repo lint is enabled).

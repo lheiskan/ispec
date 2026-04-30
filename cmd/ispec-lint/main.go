@@ -114,16 +114,37 @@ func collectCards(docsDir string) ([]*Card, []Issue) {
 		if err != nil {
 			return nil
 		}
+		if path == docsDir {
+			return nil
+		}
+		rel, _ := filepath.Rel(docsDir, path)
+		parts := strings.Split(rel, string(filepath.Separator))
+
+		// Top-level directories under the canon root must be recognized
+		// card-type directories. Unknown ones are an error, not a silent skip.
+		if d.IsDir() && len(parts) == 1 {
+			if !cardDirs[parts[0]] {
+				suggestion := closestCardDir(parts[0])
+				var msg string
+				if suggestion != "" {
+					msg = fmt.Sprintf("unrecognized card-type directory %q under canon root; did you mean %q?", parts[0], suggestion)
+				} else {
+					msg = fmt.Sprintf("unrecognized card-type directory %q under canon root; expected one of: %s", parts[0], sortedCardDirsList())
+				}
+				issues = append(issues, Issue{Path: path, Severity: "error", Msg: msg})
+				return filepath.SkipDir
+			}
+			return nil
+		}
 		if d.IsDir() {
+			// Subdirectories below recognized card-type dirs are allowed.
 			return nil
 		}
 		if filepath.Ext(path) != ".md" {
 			return nil
 		}
-		rel, _ := filepath.Rel(docsDir, path)
-		top := strings.SplitN(rel, string(filepath.Separator), 2)[0]
-		if !cardDirs[top] {
-			// Files like docs/index.md, docs/design.md, docs/build/* are not cards.
+		// Files at the canon root itself (e.g. .ispec/index.md) are skipped.
+		if !cardDirs[parts[0]] {
 			return nil
 		}
 		c, perr := parseCard(path)
@@ -135,6 +156,35 @@ func collectCards(docsDir string) ([]*Card, []Issue) {
 		return nil
 	})
 	return cards, issues
+}
+
+// closestCardDir returns a recognized card-type directory name that's one
+// trailing-s away from the given name, or "" if no close match.
+func closestCardDir(name string) string {
+	if cardDirs[name] {
+		return name
+	}
+	if strings.HasSuffix(name, "s") {
+		trimmed := strings.TrimSuffix(name, "s")
+		if cardDirs[trimmed] {
+			return trimmed
+		}
+	}
+	if cardDirs[name+"s"] {
+		return name + "s"
+	}
+	return ""
+}
+
+// sortedCardDirsList returns the recognized card-type dir names as a
+// comma-separated string in deterministic order, for error messages.
+func sortedCardDirsList() string {
+	names := make([]string, 0, len(cardDirs))
+	for n := range cardDirs {
+		names = append(names, n)
+	}
+	sort.Strings(names)
+	return strings.Join(names, ", ")
 }
 
 func validateCard(c *Card) []Issue {
