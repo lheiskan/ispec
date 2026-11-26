@@ -5,18 +5,20 @@ slug: lint-binary
 status: implemented
 targets: [REQ-1, REQ-2]
 paths:
-  - cmd/ispec-lint/**
+  - cmd/ispec/**
+  - internal/lint/**
   - go.mod
   - go.sum
 ---
 
 ## Description
 
-A Go binary (`ispec-lint`) that walks the canon directory, parses card YAML frontmatter, validates per-type schema rules, and resolves cross-card references — both frontmatter ID lists (`targets`, `satisfies_features`, etc.) and body `[[wikilinks]]`.
+The `ispec lint` subcommand, which walks the canon directory, parses card YAML frontmatter, validates per-type schema rules, and resolves cross-card references — both frontmatter ID lists (`targets`, `satisfies_features`, etc.) and body `[[wikilinks]]`.
 
 ## Behavior
 
 - Reads `.ispec/` (or `-canon-dir <subdir>` override) under `-root` (default `.`).
+- The validation engine lives in `internal/lint`, so [[F-6]] can read a canon without shelling out to a lint run. Per [[ADR-0004]], which renamed the binary from `ispec-lint` to `ispec` once it did more than lint.
 - **Errors on unrecognized directories** directly under the canon root, with a "did you mean..." suggestion when the directory name is one trailing `s` away from a valid card-type directory. This catches the common typo of pluralizing `spec` → `specs` or singularizing `stakeholders` → `stakeholder`.
 - Skips files at the canon root itself (`.ispec/index.md`, etc.) — those are not cards and don't trigger validation.
 - Validates: parseability, required fields per type, valid `status` / `audience` / `satisfaction` values, slug-matches-filename, stable ID uniqueness.
@@ -30,4 +32,4 @@ A Go binary (`ispec-lint`) that walks the canon directory, parses card YAML fron
 - No `paths:` glob validation against the actual filesystem.
 - No cross-repo reference resolution; needs `.ispec/repos.yml` plus sibling repo discovery.
 - No JSON output mode for tooling integration.
-- No tests in the Go module yet.
+- No tests for the lint engine itself. `internal/harness` is tested because it writes to user configuration; the lint path only reads.

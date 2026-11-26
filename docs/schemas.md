@@ -15,7 +15,7 @@ Reference for the frontmatter expected on each card type. Lint enforces these. B
   | adr         | `.ispec/adr/<NNNN>-<slug>.md` *(singular — not `adrs/`; numeric prefix)* |
   | session     | `.ispec/sessions/<YYYY-MM-DD>-<slug>.md`           |
 
-  Lint errors on cards placed in any other directory directly under the canon root, with a "did you mean..." suggestion when the directory name is one trailing `s` away from a valid name (so `specs/` → `did you mean spec/?`). The canon root is configurable via `ispec-lint -canon-dir <subdir>`; the default is `.ispec`.
+  Lint errors on cards placed in any other directory directly under the canon root, with a "did you mean..." suggestion when the directory name is one trailing `s` away from a valid name (so `specs/` → `did you mean spec/?`). The canon root is configurable via `ispec lint -canon-dir <subdir>`; the default is `.ispec`.
 - **Slug**: kebab-case, must match the filename (without extension and any numeric prefix).
 - **Stable ID**: typed prefix + counter (`STK-7`, `REQ-12`, `F-23`, `SPEC-auth.refresh`, `ADR-0014`). Sessions are identified by slug only — they don't have stable IDs because they're chronological by nature.
 - **Cross-repo references**: prefix with the repo name and a colon, e.g. `[[deploy-tool:F-12]]`, `depends_on: [deploy-tool:F-12]`. Sibling repos are listed in `.ispec/repos.yml` (when cross-repo lint is enabled).
@@ -147,5 +147,4 @@ Future lint additions (not v0.1):
 
 - Status invariants across linked cards (a feature `implemented` whose linked ADR is `proposed` is inconsistent).
 - `paths:` glob validation against the actual filesystem.
-- Audience-leakage checks in generated docs.
 - Cross-repo reference resolution.

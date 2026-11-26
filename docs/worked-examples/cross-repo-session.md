@@ -21,7 +21,7 @@ Investigation surfaces:
 
 The session crosses two repos. Six commits land between when the bug is filed and when mail is verified working.
 
-## How the spec-session skill would run
+## How the `ispec-start-session` skill would run
 
 ### 1. Classify the trigger
 
@@ -106,7 +106,7 @@ Canon updates land alongside their corresponding code commits where natural; the
 
 ### 10. Suggest closing the session
 
-Tests pass; mail verified end-to-end. Agent suggests session-close.
+Tests pass; mail verified end-to-end. Agent suggests `ispec-close-session`.
 
 ## Session card (final state)
 

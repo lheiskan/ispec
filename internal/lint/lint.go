@@ -1,33 +1,36 @@
-// ispec-lint validates the structure and consistency of an ispec card store.
+// Package lint parses and validates an ispec card store.
 //
-// Usage:
+// It owns the card schema: what fields exist, which are required per type,
+// which values are legal, and how references between cards resolve. It does
+// not own presentation — callers decide how issues are rendered — and it does
+// not own the command line.
 //
-//	ispec-lint [-root <project-root>] [-canon-dir <subdir>]
-//
-// Walks <project-root>/<canon-dir> (default .ispec), parses YAML frontmatter
-// on every .md file under recognized card-type directories (stakeholders,
-// requirements, features, spec, adr, sessions), validates per-type schema
-// rules, and resolves cross-card references (frontmatter ID lists and body
-// [[wikilinks]]).
-//
-// Cross-repo references of the form <repo>:<id> are noted as warnings but not
-// resolved; cross-repo lint is not yet implemented.
-//
-// Exits 0 if no errors, 1 if any errors, 2 on usage / IO failure.
-package main
+// Package status builds on Load to report on a canon without validating it,
+// so the parsing half is exported separately from the checking half.
+package lint
 
 import (
-	"flag"
+	"errors"
 	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"sort"
 	"strings"
 
 	"gopkg.in/yaml.v3"
 )
+
+// DefaultCanonDir is the canon directory name relative to a project root.
+const DefaultCanonDir = ".ispec"
+
+// ErrNoCanonDir reports a missing or non-directory canon path. Callers
+// distinguish it because "this project has no canon" is a different outcome
+// from "this project's canon is broken": the former is how every pre-bootstrap
+// project looks, and it must not be reported as a lint failure.
+var ErrNoCanonDir = errors.New("no canon directory")
 
 // Card holds the parsed frontmatter plus body of a single card.
 type Card struct {
@@ -57,10 +60,19 @@ type Card struct {
 	Body string `yaml:"-"`
 }
 
+// Issue is one problem found in a card store.
 type Issue struct {
 	Path     string
-	Severity string
+	Severity string // "error" or "warning"
 	Msg      string
+}
+
+// Result is the outcome of a Check.
+type Result struct {
+	Cards    []*Card
+	Issues   []Issue
+	Errors   int
+	Warnings int
 }
 
 var (
@@ -89,6 +101,57 @@ var (
 	}
 )
 
+// CanonPath joins a project root and a canon directory name.
+func CanonPath(root, canonDir string) string {
+	return filepath.Join(root, canonDir)
+}
+
+// Load reads every card under the canon directory. The returned issues cover
+// parse and layout failures only; schema validation is Check's job.
+//
+// It returns ErrNoCanonDir if the canon path is absent or not a directory.
+func Load(root, canonDir string) ([]*Card, []Issue, error) {
+	canon := CanonPath(root, canonDir)
+	if info, err := os.Stat(canon); err != nil || !info.IsDir() {
+		return nil, nil, fmt.Errorf("%w at %s", ErrNoCanonDir, canon)
+	}
+	cards, issues := collectCards(canon)
+	return cards, issues, nil
+}
+
+// Check loads the canon, validates every card, and resolves references.
+// Issues are sorted deterministically so output is diffable.
+func Check(root, canonDir string) (Result, error) {
+	cards, issues, err := Load(root, canonDir)
+	if err != nil {
+		return Result{}, err
+	}
+	for _, c := range cards {
+		issues = append(issues, validateCard(c)...)
+	}
+	issues = append(issues, resolveReferences(cards)...)
+
+	sort.SliceStable(issues, func(i, j int) bool {
+		if issues[i].Path != issues[j].Path {
+			return issues[i].Path < issues[j].Path
+		}
+		if issues[i].Severity != issues[j].Severity {
+			return issues[i].Severity < issues[j].Severity
+		}
+		return issues[i].Msg < issues[j].Msg
+	})
+
+	res := Result{Cards: cards, Issues: issues}
+	for _, i := range issues {
+		if i.Severity == "error" {
+			res.Errors++
+		} else {
+			res.Warnings++
+		}
+	}
+	return res, nil
+}
+
 func parseCard(path string) (*Card, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
@@ -107,17 +170,17 @@ func parseCard(path string) (*Card, error) {
 	return &c, nil
 }
 
-func collectCards(docsDir string) ([]*Card, []Issue) {
+func collectCards(canonDir string) ([]*Card, []Issue) {
 	var cards []*Card
 	var issues []Issue
-	_ = filepath.WalkDir(docsDir, func(path string, d fs.DirEntry, err error) error {
+	_ = filepath.WalkDir(canonDir, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return nil
 		}
-		if path == docsDir {
+		if path == canonDir {
 			return nil
 		}
-		rel, _ := filepath.Rel(docsDir, path)
+		rel, _ := filepath.Rel(canonDir, path)
 		parts := strings.Split(rel, string(filepath.Separator))
 
 		// Top-level directories under the canon root must be recognized
@@ -222,7 +285,7 @@ func validateCard(c *Card) []Issue {
 		case "":
 			add("error", "missing status")
 		default:
-			if !contains(statuses, c.Status) {
+			if !slices.Contains(statuses, c.Status) {
 				add("error", fmt.Sprintf("invalid status %q for type %s; expected one of %v", c.Status, c.Type, statuses))
 			}
 		}
@@ -233,7 +296,7 @@ func validateCard(c *Card) []Issue {
 		if len(c.Stakeholders) == 0 {
 			add("error", "requirement must reference at least one stakeholder")
 		}
-		if c.Satisfaction != "" && !contains(satisfactionValues, c.Satisfaction) {
+		if c.Satisfaction != "" && !slices.Contains(satisfactionValues, c.Satisfaction) {
 			add("error", fmt.Sprintf("invalid satisfaction %q; expected one of %v", c.Satisfaction, satisfactionValues))
 		}
 	case "feature":
@@ -245,7 +308,7 @@ func validateCard(c *Card) []Issue {
 			add("error", "spec section must have at least one audience tag")
 		}
 		for _, a := range c.Audience {
-			if !contains(audienceValues, a) {
+			if !slices.Contains(audienceValues, a) {
 				add("error", fmt.Sprintf("invalid audience %q; expected one of %v", a, audienceValues))
 			}
 		}
@@ -264,15 +327,6 @@ func validateCard(c *Card) []Issue {
 		}
 	}
 	return issues
-}
-
-func contains(set []string, v string) bool {
-	for _, s := range set {
-		if s == v {
-			return true
-		}
-	}
-	return false
 }
 
 func resolveReferences(cards []*Card) []Issue {
@@ -376,50 +430,4 @@ func resolveReferences(cards []*Card) []Issue {
 		}
 	}
 	return issues
-}
-
-func main() {
-	rootFlag := flag.String("root", ".", "project root containing the canon directory")
-	canonDirFlag := flag.String("canon-dir", ".ispec", "directory under root containing card files")
-	flag.Parse()
-
-	canonDir := filepath.Join(*rootFlag, *canonDirFlag)
-	if info, err := os.Stat(canonDir); err != nil || !info.IsDir() {
-		fmt.Fprintf(os.Stderr, "ispec-lint: no canon directory at %s\n", canonDir)
-		os.Exit(2)
-	}
-
-	cards, issues := collectCards(canonDir)
-	for _, c := range cards {
-		issues = append(issues, validateCard(c)...)
-	}
-	issues = append(issues, resolveReferences(cards)...)
-
-	sort.SliceStable(issues, func(i, j int) bool {
-		if issues[i].Path != issues[j].Path {
-			return issues[i].Path < issues[j].Path
-		}
-		if issues[i].Severity != issues[j].Severity {
-			return issues[i].Severity < issues[j].Severity
-		}
-		return issues[i].Msg < issues[j].Msg
-	})
-
-	var errs, warns int
-	for _, i := range issues {
-		rel, err := filepath.Rel(*rootFlag, i.Path)
-		if err != nil {
-			rel = i.Path
-		}
-		fmt.Printf("%s: [%s] %s\n", rel, i.Severity, i.Msg)
-		if i.Severity == "error" {
-			errs++
-		} else {
-			warns++
-		}
-	}
-	fmt.Printf("\n%d card(s) checked. %d error(s), %d warning(s).\n", len(cards), errs, warns)
-	if errs > 0 {
-		os.Exit(1)
-	}
 }

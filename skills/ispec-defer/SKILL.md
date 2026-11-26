@@ -1,15 +1,15 @@
 ---
-name: defer
-description: Use this skill when the user wants to explicitly defer work surfaced during a spec-session — typically to force smaller scope than the agent proposed, or to capture discovered work for later without implementing it now. Captures deferred items as cards with cascading status updates across linked requirements and ADRs.
+name: ispec-defer
+description: Use this skill when the user wants to explicitly defer work surfaced during an `ispec-start-session` — typically to force smaller scope than the agent proposed, or to capture discovered work for later without implementing it now. Captures deferred items as cards with cascading status updates across linked requirements and ADRs.
 ---
 
-# defer
+# ispec-defer
 
 Captures work for later. Invoked when the user wants to force smaller scope than the agent proposed, when investigation surfaces follow-on work that is separable from the current session, or when a feature is being explicitly removed from the active set.
 
 ## When to invoke
 
-- User says "defer X" or "let's leave X for later" during a spec-session contract negotiation.
+- User says "defer X" or "let's leave X for later" during an `ispec-start-session` contract negotiation.
 - Agent proposed a multi-feature scope and user wants to narrow to one.
 - During implementation, a follow-on feature surfaces that the user does not want to do now.
 - Standalone — user wants to defer an existing active feature that has not yet been implemented.
@@ -62,11 +62,17 @@ deferred_cards:
     rationale: tied to F-019, demoted to proposed
 ```
 
-If there is no active session (the user is invoking `defer` standalone), open a one-off session card to record the deferral and close it immediately.
+If there is no active session (the user is invoking `ispec-defer` standalone), open a one-off session card to record the deferral and close it immediately.
 
-### 5. Update BACKLOG.md
+### 5. Confirm the deferred work is visible
 
-Regenerate the `BACKLOG.md` view from cards with `status: deferred`. This is what gives the user a single place to see all deferred work and pick from when starting a new session.
+Deferred cards *are* the backlog — there is no document to regenerate
+(ADR-0006). Run `ispec status` and confirm the newly deferred items appear
+under its deferred list. That, plus `discovered_during:` on each card, is what
+lets the user find this work again when starting a new session.
+
+If a deferred item does not show up, the card's `status:` is wrong — fix the
+card rather than reporting the deferral as complete.
 
 ## Notes
 

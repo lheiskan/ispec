@@ -11,13 +11,13 @@ The session loop has multiple phases — intake, classification, design, impleme
 
 ## Decision
 
-Skill-driven. The user describes what they want in natural language; the [[F-2]] (spec-session) skill classifies the trigger and walks the phases. Confirmation points are surfaced only where they genuinely matter:
+Skill-driven. The user describes what they want in natural language; the [[F-2]] (`ispec-start-session`) skill classifies the trigger and walks the phases. Confirmation points are surfaced only where they genuinely matter:
 
 - The contract step (before coding starts), where scope and proposed canon changes are agreed.
 - Mid-coding amendment surfacing, when implementation forces a spec change.
 - Pre-completion reconciliation, when the implementation diverges from the original feature definition.
 
-A small number of explicit user-facing commands (`defer`, `session-close`) cover cases where user intent is the primary input.
+A small number of explicit user-facing commands (`ispec-defer`, `ispec-close-session`) cover cases where user intent is the primary input.
 
 ## Consequences
 

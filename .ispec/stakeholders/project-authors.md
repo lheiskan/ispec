@@ -13,7 +13,7 @@ Humans designing, building, and maintaining AI-assisted software projects who ch
 
 - Produce canonical documentation that survives iterative, prompt-driven development.
 - Have the documentation be accurate at any point in the project's lifetime without re-reading the entire codebase.
-- Enable future regeneration, training, and user-doc production from the same source material.
+- Have a record good enough that other tools can do regeneration, agent training, and user-doc production well from it — ispec supplies the material, not the output ([[ADR-0006]]).
 - Use AI assistance throughout — for both authoring and maintaining cards — without the AI silently corrupting the canon.
 
 ## Constraints

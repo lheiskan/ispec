@@ -1,9 +1,9 @@
 ---
-name: spec-session
+name: ispec-start-session
 description: Use this skill when starting work on any substantive change to the project — a new feature, a bug fix, a refactor, an ops change, or any prompt that would result in code being written. Walks the agent through trigger classification, capture of requirements / features / ADRs, an explicit user-approved contract, implementation, and pre-completion reconciliation. Produces atemporal canon (requirement / feature / spec / ADR cards) alongside the code, and ensures both stay aligned.
 ---
 
-# spec-session
+# ispec-start-session
 
 The main workflow for a unit of project work. The user describes what they want; this skill frames the agent's behavior through the entire loop until the work is committed and the session is ready to close.
 
@@ -13,7 +13,7 @@ Invoke at the start of any unit of work that would result in code or canon chang
 
 Skip only for trivial chores that touch nothing in canon (formatting, dependency bump that does not change behavior, comment fix). When in doubt, invoke — the classification step is cheap.
 
-**For brand-new projects:** if the repo has no ispec canon yet (no `.ispec/stakeholders/`, `.ispec/requirements/`, etc.), do not run this skill. Hand off to the `bootstrap` skill instead — bootstrap explicitly defers canon authoring until the first working slice exists, which is what a brand-new project actually needs.
+**For brand-new projects:** if the repo has no ispec canon yet (no `.ispec/stakeholders/`, `.ispec/requirements/`, etc.), do not run this skill. Hand off to the `ispec-bootstrap` skill instead — bootstrap explicitly defers canon authoring until the first working slice exists, which is what a brand-new project actually needs.
 
 ## Process
 
@@ -149,7 +149,7 @@ After committing, populate the session card's `commits:` field with the resultin
 
 ### 10. Suggest closing the session
 
-When the work is committed and (where applicable) tested or deployed, suggest invoking `session-close`. Do not auto-close. Let the user confirm or continue working in the same session.
+When the work is committed and (where applicable) tested or deployed, suggest invoking `ispec-close-session`. Do not auto-close. Let the user confirm or continue working in the same session.
 
 ## Status transitions during the session
 
@@ -168,7 +168,7 @@ If the contract step (4) or coding step (6) surfaces work the user wants to defe
 - If the deferred work has a draft requirement / ADR, preserve them as `proposed` linked to the deferred feature.
 - Add the cards to `deferred_cards` in the session.
 
-The user can also invoke the `defer` skill explicitly to force smaller scope.
+The user can also invoke the `ispec-defer` skill explicitly to force smaller scope.
 
 ## Anti-patterns to resist
 

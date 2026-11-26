@@ -1,11 +1,11 @@
 ---
 type: feature
 stable_id: F-2
-slug: spec-session-skill
+slug: start-session-skill
 status: implemented
 targets: [REQ-1, REQ-2]
 paths:
-  - .claude/skills/spec-session/SKILL.md
+  - skills/ispec-start-session/SKILL.md
 ---
 
 ## Description

@@ -1,9 +1,9 @@
 ---
-name: retrofit
-description: Use this skill to bootstrap ispec on an EXISTING project that has substantial code, commit history, and possibly existing documentation. Different from `bootstrap` — there is already material to read; the work is to identify the load-bearing canon hidden in the code, docs, and git history, and capture it without trying to retroactively document every feature ever shipped. Always scope retrofit explicitly to avoid an infinite project.
+name: ispec-retrofit
+description: Use this skill to bootstrap ispec on an EXISTING project that has substantial code, commit history, and possibly existing documentation. Different from `ispec-bootstrap` — there is already material to read; the work is to identify the load-bearing canon hidden in the code, docs, and git history, and capture it without trying to retroactively document every feature ever shipped. Always scope retrofit explicitly to avoid an infinite project.
 ---
 
-# retrofit
+# ispec-retrofit
 
 Initialize ispec canon for an existing project. Reads the codebase, existing docs (README, OPS.md, etc.), dependency files, and git history; proposes a deliberately-scoped initial canon set; iterates with the user.
 
@@ -13,7 +13,7 @@ Initialize ispec canon for an existing project. Reads the codebase, existing doc
 - The user has asked to start using ispec on this project.
 - Explicit user invocation.
 
-If invoked on a project that already has ispec canon, refuse — hand off to `spec-session` instead.
+If invoked on a project that already has ispec canon, refuse — hand off to `ispec-start-session` instead.
 
 ## Why retrofit is its own skill
 
@@ -24,7 +24,7 @@ The retrofit discipline is:
 - Capture only **load-bearing canon** — the entities, requirements, decisions, and features that future work will refer to. Skip incidental work.
 - Use existing documentation (README, OPS.md, design notes) as input but rewrite into ispec form. Don't just `git mv` — translate.
 - Recover what's recoverable from git history, accept what's lost.
-- Hand off to `spec-session` for future work as soon as the project has enough canon to be useful, even if coverage is incomplete.
+- Hand off to `ispec-start-session` for future work as soon as the project has enough canon to be useful, even if coverage is incomplete.
 
 ## Process
 
@@ -131,7 +131,7 @@ Do not batch — the agent's drafts will need correcting on domain semantics tha
 
 ### 7. Run lint
 
-After all cards are drafted, run `ispec-lint`. Fix any failures (most commonly: dangling references where one card mentioned another that wasn't drafted yet).
+After all cards are drafted, run `ispec lint`. Fix any failures (most commonly: dangling references where one card mentioned another that wasn't drafted yet).
 
 ### 8. Close the retrofit session
 
@@ -144,7 +144,7 @@ Update the session card:
 
 Confirm the "Discoveries about ispec" section is non-empty if there were any observations during the retrofit — even minor ones. If it's empty, ask the user one more time whether anything felt friction-y; ispec only improves if findings make it back.
 
-Tell the user: "Retrofit complete at `<scope>` level. The project has initial canon and graduates to steady-state. Future work will use the `spec-session` skill, which can lazily fill in additional canon as needed."
+Tell the user: "Retrofit complete at `<scope>` level. The project has initial canon and graduates to steady-state. Future work will use the `ispec-start-session` skill, which can lazily fill in additional canon as needed."
 
 ### 9. Suggest follow-ups
 

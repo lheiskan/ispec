@@ -1,9 +1,9 @@
 ---
-name: bootstrap
-description: Use this skill when starting a brand-new project that intends to use ispec. Bootstrap runs in three phases — a Phase 0 spike where the first working slice is built without ispec canon, a Phase 1 retrospective capture where the load-bearing canon is authored once the shape is clear (typically after a few commits), and graduation to Phase 2 (steady-state spec-session loop). Do NOT force complete canon authoring before the first slice exists; the canon will be wrong if written before there is code to read.
+name: ispec-bootstrap
+description: Use this skill when starting a brand-new project that intends to use ispec. Bootstrap runs in three phases — a Phase 0 spike where the first working slice is built without ispec canon, a Phase 1 retrospective capture where the load-bearing canon is authored once the shape is clear (typically after a few commits), and graduation to Phase 2 (the steady-state `ispec-start-session` loop). Do NOT force complete canon authoring before the first slice exists; the canon will be wrong if written before there is code to read.
 ---
 
-# bootstrap
+# ispec-bootstrap
 
 Initialize a new ispec-using project. Adapts to the empirical reality that most projects ship a working feature in their first commit and only have enough definition to write canon 2-7 days later.
 
@@ -13,7 +13,7 @@ Initialize a new ispec-using project. Adapts to the empirical reality that most 
 - An existing repository without `.ispec/stakeholders/`, `.ispec/requirements/`, etc., where the user wants to begin using ispec.
 - Explicit user invocation.
 
-If invoked on a repo that already has ispec canon, do not overwrite — instead, hand off to `spec-session` (the project is past bootstrap).
+If invoked on a repo that already has ispec canon, do not overwrite — instead, hand off to `ispec-start-session` (the project is past bootstrap).
 
 ## Phase 0 — Spike (day 1)
 
@@ -59,7 +59,7 @@ outcome: ""
 <list of questions the agent raised and how they were resolved>
 
 ## Discoveries about ispec
-(filled as the bootstrap progresses — things that surprised, frustrated, or didn't fit while applying ispec to this project. Flow back as triggers for follow-up spec-sessions in the ispec repo.)
+(filled as the bootstrap progresses — things that surprised, frustrated, or didn't fit while applying ispec to this project. Flow back as triggers for follow-up sessions in the ispec repo.)
 
 ## Outcome
 (filled at close)
@@ -135,11 +135,11 @@ Update the session card:
 
 Confirm the "Discoveries about ispec" section is non-empty if there were any observations during Phase 1 — even minor ones. If it's empty, ask the user one more time whether anything felt friction-y; ispec only improves if findings make it back.
 
-Tell the user: "Bootstrap complete. The project now has initial canon and graduates to steady-state. Future work will use the `spec-session` skill."
+Tell the user: "Bootstrap complete. The project now has initial canon and graduates to steady-state. Future work will use the `ispec-start-session` skill."
 
 ## Phase 2 — Steady state
 
-After bootstrap closes, normal `spec-session` applies. Existing features get more detailed cards lazily as work touches them; additional stakeholders, requirements, and ADRs are added when relevant.
+After bootstrap closes, normal `ispec-start-session` applies. Existing features get more detailed cards lazily as work touches them; additional stakeholders, requirements, and ADRs are added when relevant.
 
 ## Anti-patterns to resist
 

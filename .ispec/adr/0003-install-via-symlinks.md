@@ -2,7 +2,7 @@
 type: adr
 stable_id: ADR-0003
 slug: install-via-symlinks
-status: accepted
+status: superseded
 ---
 
 ## Context
@@ -30,3 +30,9 @@ Symlinks for v0.1. `make install` creates symlinks from `~/.claude/skills/` and 
 
 - **Copy on install.** Rejected for v0.1: ispec is being actively developed and skill changes need to land instantly across consuming projects. Once ispec stabilizes, copy-with-version-pin will be more appropriate, captured in a future ADR that supersedes this one.
 - **`go install` / package manager.** Rejected for v0.1: too heavy for a tool still finding its shape. The skills aren't binary content — they're markdown — so a Go-only distribution doesn't cover everything; a packaged install would still need a separate mechanism for skills.
+
+## Superseded
+
+Superseded by [[ADR-0004]], which distributes ispec as a single binary with
+its skills embedded. The objection recorded above — that a Go-only
+distribution cannot cover markdown skills — does not hold under `go:embed`.

@@ -5,12 +5,12 @@ slug: retrofit-skill
 status: implemented
 targets: [REQ-1, REQ-3]
 paths:
-  - .claude/skills/retrofit/SKILL.md
+  - skills/ispec-retrofit/SKILL.md
 ---
 
-# Retrofit skill
+# ispec-retrofit skill
 
-Adopts ispec onto an existing project — one with substantial code, git history, and possibly existing human-authored documentation. Different shape from `bootstrap`: the first slice already exists, and the discipline shifts from "produce canon for what was just built" to "capture only the load-bearing canon and resist the urge to retroactively document everything."
+Adopts ispec onto an existing project — one with substantial code, git history, and possibly existing human-authored documentation. Different shape from `ispec-bootstrap`: the first slice already exists, and the discipline shifts from "produce canon for what was just built" to "capture only the load-bearing canon and resist the urge to retroactively document everything."
 
 ## Behavior
 
@@ -28,7 +28,7 @@ The skill walks the agent through:
    - At standard scope and above: audience-tagged spec sections per major subsystem and historical-pivot ADRs recovered from commit history.
 5. Translate existing project docs into ispec form rather than preserving them as-is.
 6. Iterate one card at a time with the user; capture ispec-side observations in the session card's "Discoveries about ispec" section as they surface.
-7. Run `ispec-lint` to verify consistency.
+7. Run `ispec lint` to verify consistency.
 8. Close the retrofit session: populate `affected_cards`, `commits` (the SHAs landed during this work), `outcome`, set `status: resolved`.
 
 ## Scope discipline
